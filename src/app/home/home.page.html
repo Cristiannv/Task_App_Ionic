@@ -1,0 +1,69 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>App Tasks</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-button id="open-modal" expand="block">
+    <ion-icon slot="start" name="add"></ion-icon>
+    Add Item
+  </ion-button>
+  <p>{{ message }}</p>
+  <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button id="cancel-alert" (click)="cancelModal()">Cancel</ion-button>
+            <ion-alert
+              trigger="cancel-alert"
+              header="New Item Cancelled!"
+              message="The creation of a new item has been cancelled."
+              [buttons]="alertButtons"
+            ></ion-alert>
+          </ion-buttons>
+          <ion-title>NEW ITEM</ion-title>
+          <ion-buttons slot="end">
+            <ion-button id="confirm-alert" (click)="confirm()" [strong]="true">Confirm</ion-button>
+            <ion-alert
+              trigger="confirm-alert"
+              header="New Item Added!"
+              message="The item has been succesfully created."
+              [buttons]="alertButtons"
+            ></ion-alert>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item>
+          <ion-input
+          label="Enter Task Title"
+          labelPlacement="stacked"
+          type="text"
+          placeholder="Task Title"
+          [(ngModel)]="newTaskTitle"
+          ></ion-input>
+        </ion-item>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  <ion-list>
+    @for(task of tasks; track task.title){
+      <ion-item-sliding #slidingItem>
+        <ion-item [ngClass]="{'taskDone': task.status === 'done'}">
+          <ion-label>{{ task.title }}</ion-label>
+        </ion-item>
+        <ion-item-options side="end" (ionSwipe)="removeTask(slidingItem, task)">
+          <ion-item-option color="secondary" (click)="markAsDone(slidingItem, task)">
+            <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="removeTask(slidingItem, task)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+            <ion-toast trigger="open-toast" message="This toast will disappear after 5 seconds" [duration]="5000"></ion-toast>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    }
+  </ion-list>
+</ion-content>
+
